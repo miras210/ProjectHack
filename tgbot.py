@@ -9,7 +9,7 @@ def start_message(message):
     
 @bot.message_handler(commands = ['help'])
 def start_message(message):
-    bot.sen_message()
+    bot.send_message(message.chat.id, message.text)
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
