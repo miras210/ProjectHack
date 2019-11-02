@@ -20,5 +20,9 @@ def send_text(message):
         bot.send_message(message.chat.id, 'Прощай, создатель')
     elif message.text == 'Мирас':
         bot.send_message(message.chat.id, 'Пидарас')
+    else:
+        bot.send_message(message.cat.id, "Sosi bibu")
+        photo = open('sosi.jpg', 'rb')
+        bot.send_photo(message.chat.id, photo)
 
 bot.polling()
