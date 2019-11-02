@@ -21,7 +21,7 @@ def send_text(message):
     elif message.text == 'Мирас':
         bot.send_message(message.chat.id, 'Пидарас')
     else:
-        bot.send_message(message.cat.id, "Sosi bibu")
+        bot.send_message(message.chat.id, "Sosi bibu")
         photo = open('sosi.jpg', 'rb')
         bot.send_photo(message.chat.id, photo)
 
