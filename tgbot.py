@@ -6,10 +6,14 @@ bot = telebot.TeleBot(bot_token)
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, 'Здравствуйте! Вы обратились в информационно-справочную службу 109')
-    
+
 @bot.message_handler(commands = ['help'])
 def start_message(message):
     bot.send_message(message.chat.id, message.text)
+
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+	bot.reply_to(message, message.text)
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
