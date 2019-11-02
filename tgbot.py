@@ -11,9 +11,9 @@ def start_message(message):
 def start_message(message):
     bot.send_message(message.chat.id, message.text)
 
-@bot.message_handler(func=lambda message: True)
-def echo_all(message):
-	bot.reply_to(message, message.text)
+@bot.message_handler(regexp="SOME_REGEXP")
+def handle_message(message):
+	pass
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
