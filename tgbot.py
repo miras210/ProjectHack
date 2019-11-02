@@ -13,7 +13,7 @@ def start_message(message):
 
 @bot.message_handler(regexp="SOME_REGEXP")
 def handle_message(message):
-	pass
+	bot.send_message(message.chat.id, message.text)
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
