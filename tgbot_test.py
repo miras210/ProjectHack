@@ -6,9 +6,7 @@ bot = telebot.TeleBot(bot_token)
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, 'Здравствуйте! Вы обратились в информационно-справочную службу 109')
-    photo = open('Logo.jpg', 'rb')
-    bot.send_photo(message.chat.id, photo)
-    bot.send_photo(message.chat.id, "FILEID")
+    
 @bot.message_handler(commands = ['help'])
 def start_message(message):
     bot.send_message(message.chat.id, message.text)
