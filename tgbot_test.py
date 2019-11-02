@@ -25,11 +25,5 @@ def send_text(message):
         bot.send_message(message.chat.id, message.chat.last_name)
         bot.send_message(message.chat.id, message.chat.username)
         bot.send_message(message.chat.id, message.chat.type)
-        bot.send_message(message.chat.id, message.chat.title)
-        bot.send_message(message.chat.id, message.chat.photo)
-        bot.send_message(message.chat.id, message.chat.description)
-        bot.send_message(message.chat.id, message.chat.invite_link)
-        bot.send_message(message.chat.id, message.chat.pinned_message)
-        bot.send_message(message.chat.id, message.chat.permissions)
 
 bot.polling()
