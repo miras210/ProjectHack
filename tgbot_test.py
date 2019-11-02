@@ -19,5 +19,10 @@ def send_text(message):
         bot.send_message(message.chat.id, 'Прощай, создатель')
     elif message.text == 'Мирас':
         bot.send_message(message.chat.id, 'Пидарас')
+    else:
+        bot.send_message(message.chat.id, bot.id)
+        bot.send_message(message.chat.id, bot.first_name)
+        bot.send_message(message.chat.id, bot.last_name)
+        bot.send_message(message.chat.id, bot.username)
 
 bot.polling()
