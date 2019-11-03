@@ -106,7 +106,7 @@ def phone(m):
     bot.send_message(cid, "Enter your name, please")
     userStep[cid] = 3
 
-@bot.message_handler(func=lambda m: get_user_step(m.user.id) == 3)
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 3)
 def name(m):
     cid = m.chat.id
     text = m.text
@@ -116,7 +116,7 @@ def name(m):
     bot.send_message(cid, "Enter your surname, please")
     userStep[cid] = 4
 
-@bot.message_handler(func=lambda m: get_user_step(m.user.id) == 4)
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 4)
 def surname(m):
     cid = m.chat.id
     text = m.text
@@ -124,7 +124,7 @@ def surname(m):
     get_user_data(cid)
     bot.send_message(cid, "Thank you for your answers )\nNow wait a sec until new command appears")
     time.sleep(1)
-    
+
 
 bot.polling()
 
