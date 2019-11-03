@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import telebot
 import time
 
@@ -28,6 +29,17 @@ def TelPhone(cid):
     No = types.KeyboardButton('No', request_contact=False)
     PAns.row(Yes, No)
     bot.send_message(cid, "Do You trust us ur phone number ?", reply_markup=PAns)
+
+def MainMenu(cid):
+    Menu = types.ReplyKeyboardMarkup(row_width = 2)
+    Appeal = types.KeyboardButton('Обратиться')
+    AppealCheckout = types.KeyboardButton('Проверить обращение')
+    AppealHistory = types.KeyboardButton('История обращений')
+    ExtraCall = types.KeyboardButton('Звонок в 109 'u'\U0000260E')
+    Menu.row(Appeal,AppealCheckout)
+    Menu.row(AppealHistory,ExtraCall)
+    bot.send_message(cid,"Now wait a sec until new command appears",reply_markup=Menu)
+
 
 def get_user_data(uid):
     print("[" + str(uid) + "] " + userName[uid] + " " + userSurname[uid] + " " + userNum[uid])
@@ -90,7 +102,7 @@ def command_help(m):
         bot.send_photo(cid, open('logo.jpg', 'rb'))
         bot.send_message(cid, "Здравствуйте! Вы обратились в информационно-справочную службу 109")
         alertBut(m)
-        
+
 
 @bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 1)
 def msg_choice(m):
@@ -166,8 +178,9 @@ def surname(m):
     text = m.text
     userSurname[cid] = text
     get_user_data(cid)
-    bot.send_message(cid, "Thank you for your answers )\nNow wait a sec until new command appears")
+    bot.send_message(cid, "Thank you for your answers")
     userStep[cid] = 10
     time.sleep(1)
+    MainMenu(cid)
 
 bot.polling()
