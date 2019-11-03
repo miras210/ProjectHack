@@ -161,7 +161,7 @@ def name(m):
 def surname(m):
     cid = m.chat.id
     text = m.text
-    userSurname = text
+    userSurname[cid] = text
     get_user_data(cid)
     bot.send_message(cid, "Thank you for your answers )\nNow wait a sec until new command appears")
     time.sleep(1)
