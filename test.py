@@ -8,6 +8,8 @@ TOKEN = '926752910:AAFGad8KGmXJGXkO2tX0re0MXLv4NPPLwTw'
 knownUsers = []
 userStep = {}
 userNum = {}
+userName = {}
+userSurname = {}
 
 commands = {
     'start'     : 'This is the beginning of ur journey',
@@ -27,8 +29,8 @@ def TelPhone(cid):
     PAns.row(Yes, No)
     bot.send_message(cid, "Do You trust us ur phone number ?", reply_markup=PAns)
 
-def get_user_num(uid):
-    print("[" + str(uid) + "] " + userNum[uid])
+def get_user_data(uid):
+    print("[" + str(uid) + "] " + userName[uid] + " " + userSurname[uid] + " " + userNum[uid])
     return userNum[uid]
 
 def get_user_step(uid):
@@ -49,7 +51,7 @@ bot.set_update_listener(listener)
 
 def alertBut(m):
     cid = m.chat.id
-    time.sleep(3)
+    time.sleep(2)
     Ans = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     Ans.add('Yes', 'No')
     bot.send_message(cid, "Is ur phone number in Telegram real one ?", reply_markup = Ans)
@@ -99,10 +101,30 @@ def phone(m):
     text = m.text
     num = m.contact.phone_number
     userNum[cid] = num
-    get_user_num(cid)
     bot.send_message(cid, "Processing ur data ...", reply_markup=hideBoard)
+    time.sleep(2)
+    bot.send_message(cid, "Enter your name, please")
     userStep[cid] = 3
 
+@bot.message_handler(func=lambda m: get_user_step(m.user.id) == 3)
+def name(m):
+    cid = m.chat.id
+    text = m.text
+    userName[cid] = text
+    bot.send_message(cid, "Processing your data ...")
+    time.sleep(1)
+    bot.send_message(cid, "Enter your surname, please")
+    userStep[cid] = 4
+
+@bot.message_handler(func=lambda m: get_user_step(m.user.id) == 4)
+def surname(m):
+    cid = m.chat.id
+    text = m.text
+    userSurname = text
+    get_user_data(cid)
+    bot.send_message(cid, "Thank you for your answers )\nNow wait a sec until new command appears")
+    time.sleep(1)
+    
 
 bot.polling()
 
