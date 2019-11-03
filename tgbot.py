@@ -19,6 +19,7 @@ commands = {
 
 hideBoard = types.ReplyKeyboardRemove()
 
+"""--------------------FUNCTIONS SECTION------------------------"""
 def wrong_command(cid):
     bot.send_message(cid, "Hey, bullsh*t you have typed wrong command")
     bot.send_message(cid, "Please try again")
@@ -43,7 +44,7 @@ def MainMenu(cid):
 
 def get_user_data(uid):
     print("[" + str(uid) + "] " + userName[uid] + " " + userSurname[uid] + " " + userNum[uid])
-    return userNum[uid]
+    return 0
 
 def get_user_step(uid):
     if uid in userStep:
@@ -87,6 +88,10 @@ def PhoneCheck(num):
                     return False
             return True
 
+
+"""--------------------FUNCTIONS SECTION------------------------"""
+
+"""----------------------- HANDLERS ----------------------------"""
 @bot.message_handler(commands=['start'])
 def command_help(m):
     cid = m.chat.id
