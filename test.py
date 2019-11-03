@@ -7,6 +7,7 @@ TOKEN = '926752910:AAFGad8KGmXJGXkO2tX0re0MXLv4NPPLwTw'
 
 knownUsers = []
 userStep = {}
+userNum = {}
 
 commands = {
     'start'     : 'This is the beginning of ur journey',
@@ -25,6 +26,10 @@ def TelPhone(cid):
     No = types.KeyboardButton('No', request_contact=False)
     PAns.row(Yes, No)
     bot.send_message(cid, "Do You trust us ur phone number ?", reply_markup=PAns)
+
+def get_user_num(uid):
+    print("[" + str(uid) + "] " + userNum[uid])
+    return userNum[uid]
 
 def get_user_step(uid):
     if uid in userStep:
@@ -71,7 +76,6 @@ def msg_choice(m):
     text = m.text
     if text == 'Yes':
         userStep[cid] = 2
-        bot.send_message(cid, "CHECK")
         TelPhone(cid)
     elif text == 'No':
         #input your num
@@ -87,14 +91,20 @@ def phone_num(m):
         bot.send_message(cid, "Fuck*ng bastard send ur motherfuck*ng Telegram number")
         TelPhone(cid)
     else:
-        userStep[cid] = 3
+        wrong_command(cid)
 
-        
+@bot.message_handler(content_types=['contact'])
+def phone(m):
+    cid = m.chat.id
+    text = m.text
+    num = m.contact.phone_number
+    userNum[cid] = num
+    get_user_num(cid)
+    bot.send_message(cid, "Processing ur data ...", reply_markup=hideBoard)
+    userStep[cid] = 3
+
 
 bot.polling()
-"""@bot.message_handler(func=lambda message: get_user_step(message.chat.id) == 2)
-def trust_choice(m):
-    cid = m.chat.id
-    text = m.text """
+
 
     
