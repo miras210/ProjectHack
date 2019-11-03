@@ -52,12 +52,33 @@ bot.set_update_listener(listener)
 
 def alertBut(m):
     cid = m.chat.id
+<<<<<<< HEAD
     time.sleep(2)
+=======
+    time.sleep(1)
+>>>>>>> 0414b7ba18c0771951d8019e8664acf1db36a69c
     Ans = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     Ans.add('Yes', 'No')
     bot.send_message(cid, "Is ur phone number in Telegram real one ?", reply_markup = Ans)
     userStep[cid] = 1
 
+def PhoneCheck(num):
+    if not (len(num) == 11 or len(num) == 12):
+        return False
+    else:
+        if len(num) == 12 and (num[0] != '+' or num[1] != '7'):
+            return False
+        elif len(num) == 11 and num[0] != '7':
+            return False
+        else:
+            if len(num) == 12:
+                num = num[2:]
+            elif len(num) == 11:
+                num = num[1:]
+            for ch in num:
+                if not (ch >= '0' and ch <= '9'):
+                    return False
+            return True
 
 @bot.message_handler(commands=['start'])
 def command_help(m):
@@ -81,10 +102,26 @@ def msg_choice(m):
         userStep[cid] = 2
         TelPhone(cid)
     elif text == 'No':
-        #input your num
-        bot.send_message(cid, "Please enter ur phone number")
+        userStep[cid] = 5
+        bot.send_message(cid, "Please enter ur phone number\nRight Format: +7**********")
     else:
         wrong_command(cid)
+
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 5)
+def inp_tel(m):
+    cid = m.chat.id
+    text = m.text
+    #func check num
+    if PhoneCheck(text):
+        if len(text) == 11:
+            userNum[cid] = text[1:]
+        elif len(text) == 12:
+            userNum[cid] = text[2:]
+        time.sleep(1)
+        bot.send_message(cid, "Enter your name, please")
+        userStep[cid] = 3
+    else:
+        bot.send_message(cid, "You have entered your phone number in a wrong format\nPlease try to do it again")
 
 @bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 2)
 def phone_num(m):
@@ -101,6 +138,7 @@ def phone(m):
     cid = m.chat.id
     text = m.text
     num = m.contact.phone_number
+<<<<<<< HEAD
     userNum[cid] = num
     bot.send_message(cid, "Processing ur data ...", reply_markup=hideBoard)
     time.sleep(2)
@@ -125,6 +163,43 @@ def surname(m):
     get_user_data(cid)
     bot.send_message(cid, "Thank you for your answers )\nNow wait a sec until new command appears")
     time.sleep(1)
+=======
+    #func check num
+    if PhoneCheck(num):
+        if len(num) == 11:
+            userNum[cid] = num[1:]
+        elif len(num) == 12:
+            userNum[cid] = num[2:]
+        bot.send_message(cid, "Processing ur data ...", reply_markup=hideBoard)
+        time.sleep(1)
+        bot.send_message(cid, "Enter your name, please")
+        userStep[cid] = 3
+    else:
+        userStep[cid] = 5
+        bot.send_message(cid, "You have entered your phone number in a wrong format\nPlease try to do it again")
+>>>>>>> 0414b7ba18c0771951d8019e8664acf1db36a69c
 
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 3)
+def name(m):
+    cid = m.chat.id
+    text = m.text
+    userName[cid] = text
+    bot.send_message(cid, "Processing your data ...")
+    time.sleep(1)
+    bot.send_message(cid, "Enter your surname, please")
+    userStep[cid] = 4
 
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 4)
+def surname(m):
+    cid = m.chat.id
+    text = m.text
+    userSurname[cid] = text
+    get_user_data(cid)
+    bot.send_message(cid, "Thank you for your answers )\nNow wait a sec until new command appears")
+    time.sleep(1)
+
+<<<<<<< HEAD
 bot.polling()
+=======
+bot.polling()
+>>>>>>> 0414b7ba18c0771951d8019e8664acf1db36a69c
