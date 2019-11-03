@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import telebot
 import time
+from datetime import date
 
 from telebot import types
 
@@ -16,6 +17,7 @@ appealType = {}
 appealTheme = {}
 appealText = {}
 appealLocation = {}
+appealDate = {}
 gosUch = {}
 
 commands = {
@@ -153,7 +155,6 @@ def msg_choice(m):
 def inp_tel(m):
     cid = m.chat.id
     text = m.text
-    #func check num
     if PhoneCheck(text):
         if len(text) == 11:
             userNum[cid] = text[1:]
@@ -180,7 +181,6 @@ def phone(m):
     cid = m.chat.id
     text = m.text
     num = m.contact.phone_number
-    #func check num
     if PhoneCheck(num):
         if len(num) == 11:
             userNum[cid] = num[1:]
@@ -282,7 +282,6 @@ def doc(m):
     if text == 'Yes':
         bot.send_message(cid, "Send your files here", reply_markup=hideBoard)
     elif text == 'No':
-        #next
         bot.send_message(cid, 'Moving to the next step. Type "Next"', reply_markup=hideBoard)
         userStep[cid] = 25
     else:
@@ -328,6 +327,7 @@ def confirm(m):
     cid = m.chat.id
     text = m.text
     if text == 'Yes':
+        appealDate[cid] = date.today()
         #send data, get appeal id
         bot.send_message(cid, 'Your data has been successfully sent )')
     elif text == 'No':
