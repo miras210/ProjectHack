@@ -52,11 +52,7 @@ bot.set_update_listener(listener)
 
 def alertBut(m):
     cid = m.chat.id
-<<<<<<< HEAD
-    time.sleep(2)
-=======
     time.sleep(1)
->>>>>>> 0414b7ba18c0771951d8019e8664acf1db36a69c
     Ans = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     Ans.add('Yes', 'No')
     bot.send_message(cid, "Is ur phone number in Telegram real one ?", reply_markup = Ans)
@@ -138,7 +134,6 @@ def phone(m):
     cid = m.chat.id
     text = m.text
     num = m.contact.phone_number
-<<<<<<< HEAD
     userNum[cid] = num
     bot.send_message(cid, "Processing ur data ...", reply_markup=hideBoard)
     time.sleep(2)
@@ -163,21 +158,6 @@ def surname(m):
     get_user_data(cid)
     bot.send_message(cid, "Thank you for your answers )\nNow wait a sec until new command appears")
     time.sleep(1)
-=======
-    #func check num
-    if PhoneCheck(num):
-        if len(num) == 11:
-            userNum[cid] = num[1:]
-        elif len(num) == 12:
-            userNum[cid] = num[2:]
-        bot.send_message(cid, "Processing ur data ...", reply_markup=hideBoard)
-        time.sleep(1)
-        bot.send_message(cid, "Enter your name, please")
-        userStep[cid] = 3
-    else:
-        userStep[cid] = 5
-        bot.send_message(cid, "You have entered your phone number in a wrong format\nPlease try to do it again")
->>>>>>> 0414b7ba18c0771951d8019e8664acf1db36a69c
 
 @bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 3)
 def name(m):
@@ -198,8 +178,4 @@ def surname(m):
     bot.send_message(cid, "Thank you for your answers )\nNow wait a sec until new command appears")
     time.sleep(1)
 
-<<<<<<< HEAD
 bot.polling()
-=======
-bot.polling()
->>>>>>> 0414b7ba18c0771951d8019e8664acf1db36a69c
