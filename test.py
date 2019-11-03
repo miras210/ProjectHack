@@ -12,9 +12,16 @@ userNum = {}
 userName = {}
 userSurname = {}
 
+appealType = {}
+appealTheme = {}
+appealText = {}
+appealLocation = {}
+gosUch = {}
+
 commands = {
     'start'     : 'This is the beginning of ur journey',
-    'help'      : 'Use this in order to see other commands'
+    'help'      : 'Use this in order to see other commands',
+    'menu'      : 'Here you can choose your suitable option'
 }
 
 hideBoard = types.ReplyKeyboardRemove()
@@ -40,6 +47,29 @@ def MainMenu(cid):
     Menu.row(AppealHistory,ExtraCall)
     bot.send_message(cid,"Now wait a sec until new command appears",reply_markup=Menu)
 
+def Type(cid):
+    Type = types.ReplyKeyboardMarkup(row_width=1)
+    Type.add('Жалоба','Предложение','Запрос','Заявление','Отклик')
+    bot.send_message(cid, "Choose your type please", reply_markup=Type)
+    userStep[cid] = 20
+
+def Theme(cid):
+    Theme = types.ReplyKeyboardMarkup(row_width=1)
+    Theme.add('Свет', 'Вода', 'Канализация', 'Логистика', 'Митинги')
+    bot.send_message(cid, "Choose your theme please", reply_markup=Theme)
+    userStep[cid] = 21
+
+def GosUch(cid):
+    Gos = types.ReplyKeyboardMarkup(row_width=1)
+    Gos.add('МВД', 'КСК', 'ЦОН', 'Больницы', 'Акимат')
+    bot.send_message(cid, 'Choose your гос орган', reply_markup=Gos)
+    userStep[cid] = 22
+
+def Doc(cid):
+    Doc = types.ReplyKeyboardMarkup(row_width=2)
+    Doc.add('Yes', 'No')
+    bot.send_message(cid, 'Would you like to send some files ?', reply_markup=Doc)
+    userStep[cid] = 24
 
 def get_user_data(uid):
     print("[" + str(uid) + "] " + userName[uid] + " " + userSurname[uid] + " " + userNum[uid])
@@ -98,6 +128,8 @@ def command_help(m):
     elif userStep[cid] >= 10:
         bot.send_message(cid, "I already know you, so what is ur choice ?")
         #action buttons
+        userStep[cid] = 10
+        MainMenu(cid)
     else:
         bot.send_photo(cid, open('logo.jpg', 'rb'))
         bot.send_message(cid, "Здравствуйте! Вы обратились в информационно-справочную службу 109")
@@ -182,5 +214,126 @@ def surname(m):
     userStep[cid] = 10
     time.sleep(1)
     MainMenu(cid)
+
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 10)
+def choice(m):
+    cid = m.chat.id
+    text = m.text
+    if text == 'Обратиться':
+        Type(cid)
+    elif text == 'Проверить обращение':
+        userStep[cid] = 30
+    elif text == 'История обращений':
+        userStep[cid] = 40
+    elif text == 'Звонок в 109 'u'\U0000260E':
+        userStep[cid] = 50
+    else:
+        wrong_command(cid)
+
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 20)
+def ap_type(m):
+    cid = m.chat.id
+    text = m.text
+    if text == 'Жалоба' or text == 'Предложение' or text == 'Запрос' or text == 'Заявление' or text == 'Отклик':
+        appealType[cid] = text
+        Theme(cid)
+    else:
+        wrong_command(cid)
+
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 21)
+def theme(m):
+    cid = m.chat.id
+    text = m.text
+    if text == 'Свет' or text == 'Вода' or text == 'Канализация' or text == 'Логистика':
+        appealTheme[cid] = text
+        GosUch(cid)
+    elif text == 'Митинги':
+        bot.send_message(cid, 'Ах ты Жукуш Улан')
+        appealTheme[cid] = text
+        GosUch(cid)
+    else:
+        wrong_command(cid)
+
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 22)
+def gos(m):
+    cid = m.chat.id
+    text = m.text
+    if text == 'МВД' or text == 'КСК' or text == 'ЦОН' or text == 'Больницы' or text == 'Акимат':
+        gosUch[cid] = text
+        bot.send_message(cid, 'Now you can enter your appeal', reply_markup=hideBoard)
+        userStep[cid] = 23
+    else:
+        wrong_command(cid)
+
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 23)
+def appeal(m):
+    cid = m.chat.id
+    text = m.text
+    if len(text) <= 800:
+        appealText[cid] = text
+        Doc(cid)
+    else:
+        bot.send_message(cid, 'You have written very long text, please write a bit shorter (max 800 characters)')
+
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 24)
+def doc(m):
+    cid = m.chat.id
+    text = m.text
+    if text == 'Yes':
+        bot.send_message(cid, "Send your files here", reply_markup=hideBoard)
+    elif text == 'No':
+        #next
+        bot.send_message(cid, 'Moving to the next step. Type "Next"', reply_markup=hideBoard)
+        userStep[cid] = 25
+    else:
+        wrong_command(cid)
+
+@bot.message_handler(content_types=['document', 'photo'])
+def send(m):
+    cid = m.chat.id
+    #passing docs
+    pass
+    bot.send_message(cid, 'Any other file ?\nIf yes, send it. Otherwise type "No"')
+    userStep[cid] = 25
+
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 25)
+def geo(m):
+    cid = m.chat.id
+    geoL = types.ReplyKeyboardMarkup(row_width=2)
+    yes = types.KeyboardButton("Yes", request_location=True)
+    no = types.KeyboardButton("No")
+    geoL.add(yes, no)
+    bot.send_message(cid, "Would you like to send us ur current location ?", geoL)
+    userStep[cid] = 26
+
+@bot.message_handler(content_types=['location'])
+def loc(m):
+    cid = m.chat.id
+    loc = m.venue.address
+    appealLocation[cid] = loc
+    bot.send_message(cid, 'Your data is processing ...', reply_markup=hideBoard)
+    time.sleep(1)
+    bot.send_message(cid, 'I am ready, type next')
+
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 26)
+def ready(m):
+    cid = m.chat.id
+    conf = types.ReplyKeyboardMarkup(row_width=2)
+    conf.add('Yes', 'No')
+    bot.send_message(cid, 'Are you ready to send the appeal ?', reply_markup=conf)
+    userStep[cid] = 27
+
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 27)
+def confirm(m):
+    cid = m.chat.id
+    text = m.text
+    if text == 'Yes':
+        #send data, get appeal id
+        bot.send_message(cid, 'Your data has been successfully sent )')
+    elif text == 'No':
+        Type(cid)
+        userStep[cid] = 20
+    else:
+        wrong_command(cid)
 
 bot.polling()
