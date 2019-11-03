@@ -54,8 +54,8 @@ def alertBut(m):
     time.sleep(1)
     Ans = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     Ans.add('Yes', 'No')
-    bot.send_message(cid, "Is ur phone number in Telegram real one ?", reply_markup = Ans)
     userStep[cid] = 1
+    bot.send_message(cid, "Is ur phone number in Telegram real one ?", reply_markup = Ans)
 
 def PhoneCheck(num):
     if not (len(num) == 11 or len(num) == 12):
@@ -80,13 +80,16 @@ def command_help(m):
     cid = m.chat.id
     if cid not in knownUsers:
         knownUsers.append(cid)
-        userStep[cid] = 0
         bot.send_photo(cid, open('logo.jpg', 'rb'))
         bot.send_message(cid, "Здравствуйте! Вы обратились в информационно-справочную службу 109")
         alertBut(m)
-    else:
+    elif userStep[cid] >= 10:
         bot.send_message(cid, "I already know you, so what is ur choice ?")
         #action buttons
+    else:
+        bot.send_photo(cid, open('logo.jpg', 'rb'))
+        bot.send_message(cid, "Здравствуйте! Вы обратились в информационно-справочную службу 109")
+        alertBut(m)
         
 
 @bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 1)
@@ -164,6 +167,7 @@ def surname(m):
     userSurname[cid] = text
     get_user_data(cid)
     bot.send_message(cid, "Thank you for your answers )\nNow wait a sec until new command appears")
+    userStep[cid] = 10
     time.sleep(1)
 
 bot.polling()
