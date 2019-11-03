@@ -1,6 +1,6 @@
+# -*- coding: utf-8 -*-
 import telebot
 import time
-import mysql.connector
 
 from telebot import types
 
@@ -30,6 +30,17 @@ def TelPhone(cid):
     PAns.row(Yes, No)
     bot.send_message(cid, "Do You trust us ur phone number ?", reply_markup=PAns)
 
+def MainMenu(cid):
+    Menu = types.ReplyKeyboardMarkup(row_width = 2)
+    Appeal = types.KeyboardButton('Обратиться')
+    AppealCheckout = types.KeyboardButton('Проверить обращение')
+    AppealHistory = types.KeyboardButton('История обращений')
+    ExtraCall = types.KeyboardButton('Звонок в 109 'u'\U0000260E')
+    Menu.row(Appeal,AppealCheckout)
+    Menu.row(AppealHistory,ExtraCall)
+    bot.send_message(cid,"Now wait a sec until new command appears",reply_markup=Menu)
+
+
 def get_user_data(uid):
     print("[" + str(uid) + "] " + userName[uid] + " " + userSurname[uid] + " " + userNum[uid])
     return userNum[uid]
@@ -55,8 +66,8 @@ def alertBut(m):
     time.sleep(1)
     Ans = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     Ans.add('Yes', 'No')
-    bot.send_message(cid, "Is ur phone number in Telegram real one ?", reply_markup = Ans)
     userStep[cid] = 1
+    bot.send_message(cid, "Is ur phone number in Telegram real one ?", reply_markup = Ans)
 
 def PhoneCheck(num):
     if not (len(num) == 11 or len(num) == 12):
@@ -81,13 +92,16 @@ def command_help(m):
     cid = m.chat.id
     if cid not in knownUsers:
         knownUsers.append(cid)
-        userStep[cid] = 0
         bot.send_photo(cid, open('logo.jpg', 'rb'))
         bot.send_message(cid, "Здравствуйте! Вы обратились в информационно-справочную службу 109")
         alertBut(m)
-    else:
+    elif userStep[cid] >= 10:
         bot.send_message(cid, "I already know you, so what is ur choice ?")
         #action buttons
+    else:
+        bot.send_photo(cid, open('logo.jpg', 'rb'))
+        bot.send_message(cid, "Здравствуйте! Вы обратились в информационно-справочную службу 109")
+        alertBut(m)
 
 
 @bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 1)
@@ -134,30 +148,19 @@ def phone(m):
     cid = m.chat.id
     text = m.text
     num = m.contact.phone_number
-    userNum[cid] = num
-    bot.send_message(cid, "Processing ur data ...", reply_markup=hideBoard)
-    time.sleep(2)
-    bot.send_message(cid, "Enter your name, please")
-    userStep[cid] = 3
-
-@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 3)
-def name(m):
-    cid = m.chat.id
-    text = m.text
-    userName[cid] = text
-    bot.send_message(cid, "Processing your data ...")
-    time.sleep(1)
-    bot.send_message(cid, "Enter your surname, please")
-    userStep[cid] = 4
-
-@bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 4)
-def surname(m):
-    cid = m.chat.id
-    text = m.text
-    userSurname = text
-    get_user_data(cid)
-    bot.send_message(cid, "Thank you for your answers )\nNow wait a sec until new command appears")
-    time.sleep(1)
+    #func check num
+    if PhoneCheck(num):
+        if len(num) == 11:
+            userNum[cid] = num[1:]
+        elif len(num) == 12:
+            userNum[cid] = num[2:]
+        bot.send_message(cid, "Processing ur data ...", reply_markup=hideBoard)
+        time.sleep(1)
+        bot.send_message(cid, "Enter your name, please")
+        userStep[cid] = 3
+    else:
+        userStep[cid] = 5
+        bot.send_message(cid, "You have entered your phone number in a wrong format\nPlease try to do it again")
 
 @bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 3)
 def name(m):
@@ -175,7 +178,9 @@ def surname(m):
     text = m.text
     userSurname[cid] = text
     get_user_data(cid)
-    bot.send_message(cid, "Thank you for your answers )\nNow wait a sec until new command appears")
+    bot.send_message(cid, "Thank you for your answers")
+    userStep[cid] = 10
     time.sleep(1)
+    MainMenu(cid)
 
 bot.polling()
