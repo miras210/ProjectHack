@@ -36,7 +36,7 @@ def TelPhone(cid):
     PAns = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     Yes = types.KeyboardButton('Yes', request_contact=True)
     No = types.KeyboardButton('No', request_contact=False)
-    PAns.row(Yes, No)
+    PAns.add(Yes, No)
     bot.send_message(cid, "Do You trust us ur phone number ?", reply_markup=PAns)
 
 def MainMenu(cid):
