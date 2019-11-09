@@ -92,6 +92,21 @@ def Doc(cid):
     bot.send_message(cid, 'Would you like to send some files ?', reply_markup=Doc)
     userStep[cid] = 24
 
+def history(cid):
+    markup = InlineKeyboardMarkup()
+    sql = "SELECT appeal_id, date FROM appeal_info WHERE user_id = %s"
+    val = (cid, )
+    mycursor.execute(sql, val)
+    myresult = mycursor.fetchall()
+    for row in myresult:
+        for val in range(2):
+            if val == 0:
+                msg1 = val
+            else:
+                msg2 = val
+        markup.add(InlineKeyboardButton("Appeal num [" + msg1 + "] written on " + msg2, callback_data=msg1))
+    return markup
+
 def get_user_data(uid):
     print("[" + str(uid) + "] " + userName[uid] + " " + userSurname[uid] + " " + userNum[uid])
     return 0
@@ -255,6 +270,8 @@ def choice(m):
         bot.send_message(cid, "Введите номер вашего обращения", reply_markup=hideBoard)
         userStep[cid] = 30
     elif text == 'История обращений':
+        time.sleep(1)
+        bot.send_message(cid,"Choose any appeal id to see info",reply_markup=history(cid))
         userStep[cid] = 40
     elif text == 'Звонок в 109':
         userStep[cid] = 50
@@ -406,6 +423,24 @@ def appealCheck(m):
                 status = x[i]
     msg = "Ваше обращение написанное " + str(date) + " числа под номером #" + str(text) + ": " + str(status)
     bot.send_message(cid, msg)
+    time.sleep(1)
+    MainMenu(cid)
+    userStep[cid] = 10
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback(call):
+    sql = "SELECT appeal_id, status FROM appeal_info WHERE appeal_id = %s"
+    val = (call.data, )
+    mycursor.execute(sql,val)
+    myresult = mycursor.fetchall()
+    for x in myresult:
+        for i in range(2):
+            if i == 0:
+                id = x[i]
+            else:
+                status = x[i]
+    msg = "Ваше обращение под номером #" + str(id) + " имеет статус " + str(status)
+    bot.send_message(call.id, msg)
     time.sleep(1)
     MainMenu(cid)
     userStep[cid] = 10
