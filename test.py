@@ -106,6 +106,7 @@ def history(cid):
             else:
                 msg2 = row[val]
         markup.add(InlineKeyboardButton("Appeal num [" + str(msg1) + "] written on " + str(msg2), callback_data=str(msg1)))
+    markup.add(InlineKeyboardButton("Back", callback_data="back"))
     return markup
 
 def get_user_data(uid):
@@ -430,21 +431,23 @@ def appealCheck(m):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
-    sql = "SELECT appeal_id, status FROM appeal_info WHERE appeal_id = %s"
-    val = (call.data, )
-    mycursor.execute(sql,val)
-    myresult = mycursor.fetchall()
-    for x in myresult:
-        for i in range(2):
-            if i == 0:
-                id = x[i]
-            else:
-                status = x[i]
-    msg = "Ваше обращение под номером #" + str(id) + " имеет статус " + str(status)
-    bot.answer_callback_query(call.id, msg)
-    time.sleep(1)
-    MainMenu(cid)
-    userStep[cid] = 10
+    if call.data == "back":
+        time.sleep(1)
+        MainMenu(cid)
+        userStep[cid] = 10
+    else:
+        sql = "SELECT appeal_id, status FROM appeal_info WHERE appeal_id = %s"
+        val = (call.data, )
+        mycursor.execute(sql,val)
+        myresult = mycursor.fetchall()
+        for x in myresult:
+            for i in range(2):
+                if i == 0:
+                    id = x[i]
+                else:
+                    status = x[i]
+        msg = "Ваше обращение под номером #" + str(id) + " имеет статус " + str(status)
+        bot.answer_callback_query(call.id, msg)
 
 # @bot.message_handler(func=lambda m: get_user_step(m.chat.id) == 30)
 # def history(m):
