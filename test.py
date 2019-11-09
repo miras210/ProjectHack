@@ -441,7 +441,7 @@ def callback(call):
             else:
                 status = x[i]
     msg = "Ваше обращение под номером #" + str(id) + " имеет статус " + str(status)
-    bot.send_message(call.id, msg)
+    bot.answer_callback_query(call.id, msg)
     time.sleep(1)
     MainMenu(cid)
     userStep[cid] = 10
