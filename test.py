@@ -433,8 +433,8 @@ def appealCheck(m):
 def callback(call):
     if call.data == "back":
         time.sleep(1)
-        MainMenu(cid)
-        userStep[cid] = 10
+        MainMenu(call.id)
+        userStep[call.id] = 10
     else:
         sql = "SELECT appeal_id, status FROM appeal_info WHERE appeal_id = %s"
         val = (call.data, )
