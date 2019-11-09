@@ -102,9 +102,9 @@ def history(cid):
     for row in myresult:
         for val in range(2):
             if val == 0:
-                msg1 = val
+                msg1 = row[val]
             else:
-                msg2 = val
+                msg2 = row[val]
         markup.add(InlineKeyboardButton("Appeal num [" + str(msg1) + "] written on " + str(msg2), callback_data=str(msg1)))
     return markup
 
