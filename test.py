@@ -3,6 +3,7 @@ import telebot
 import time
 import mysql.connector
 import sys
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
