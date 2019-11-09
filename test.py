@@ -105,7 +105,7 @@ def history(cid):
                 msg1 = val
             else:
                 msg2 = val
-        markup.add(InlineKeyboardButton("Appeal num [" + msg1 + "] written on " + msg2, callback_data=msg1))
+        markup.add(InlineKeyboardButton("Appeal num [" + str(msg1) + "] written on " + str(msg2), callback_data=str(msg1)))
     return markup
 
 def get_user_data(uid):
